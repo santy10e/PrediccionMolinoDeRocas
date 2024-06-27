@@ -1,0 +1,36 @@
+/* style.css */
+body {
+    background-color: #f0f0f5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #4CAF50;
+}
+
+.stButton>button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.stButton>button:hover {
+    background-color: #45a049;
+}
+
+.stAudio {
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+}
+
+.stSpinner {
+    color: #4CAF50;
+}
+
+body {
+    background-image: url("https://wallpapercave.com/wp/Kj1qVve.jpg");
+    background-size: cover;
+}

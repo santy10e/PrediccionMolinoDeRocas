@@ -10,6 +10,14 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 
+# CSS personalizado para cambiar el estilo de la página
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# Cargar CSS personalizado
+local_css("style.css")
+
 # Función para extraer características de los archivos de audio
 def extract_features(sound, sr):
     mfccs = librosa.feature.mfcc(y=sound, sr=sr, n_mfcc=40)
@@ -84,7 +92,7 @@ def train_model():
     # Verificar la distribución de las clases
     unique, counts = np.unique(y_train, return_counts=True)
     class_distribution = dict(zip(unique, counts))
-    # st.write(f"Class distribution: {class_distribution}")
+    st.write(f"Class distribution: {class_distribution}")
 
     # Verificar si hay al menos dos clases presentes
     if len(unique) < 2:
@@ -104,8 +112,8 @@ def train_model():
     unique_test, counts_test = np.unique(y_test, return_counts=True)
     class_distribution_test = dict(zip(unique_test, counts_test))
     
-    # st.write(f"Training set class distribution: {class_distribution_train}")
-    # st.write(f"Test set class distribution: {class_distribution_test}")
+    st.write(f"Training set class distribution: {class_distribution_train}")
+    st.write(f"Test set class distribution: {class_distribution_test}")
 
     # Entrenar un clasificador (usando RandomForest como ejemplo)
     clf = RandomForestClassifier(random_state=42)
@@ -122,12 +130,12 @@ def train_model():
     
     # Mejor modelo
     best_clf = grid_search.best_estimator_
-    # st.write(f"Best parameters found: {grid_search.best_params_}")
+    st.write(f"Best parameters found: {grid_search.best_params_}")
 
     # Validación cruzada
     scores = cross_val_score(best_clf, X_train, y_train, cv=5)
-    # st.write(f"Cross-validation scores: {scores}")
-    # st.write(f"Mean cross-validation score: {np.mean(scores)}")
+    st.write(f"Cross-validation scores: {scores}")
+    st.write(f"Mean cross-validation score: {np.mean(scores)}")
 
     # Guardar el modelo entrenado y el LabelEncoder
     model_file = 'audio_classifier_model.pkl'
@@ -184,7 +192,6 @@ if audio_file is not None:
     audio_data, sample_rate = load_audio(audio_file)
     
     if audio_data is not None:
-        
         # Extraer características del audio
         audio_features = extract_features(audio_data, sample_rate)
         
@@ -213,21 +220,23 @@ else:
     st.write("No se ha cargado ningún archivo de audio.")
 
 # Reproducción de audios normales y anormales
-st.subheader("Reproducir audios de muestra")
-if st.button("Reproducir audio normal"):
-    audio_normal_file = '../content/train_audio/section_00_source_train_normal_0016.wav'
-    st.audio(audio_normal_file, format='audio/wav')
-
-if st.button("Reproducir audio anormal"):
-    audio_anormal_file = '../content/train_audio/section_00_source_train_anormal_0000.wav'
-    st.audio(audio_anormal_file, format='audio/wav')
+st.subheader("Reproducir Audios de Muestra")
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("Reproducir Audio Normal"):
+        audio_normal_file = '../content/train_audio/section_00_source_train_normal_0016.wav'
+        st.audio(audio_normal_file, format='audio/wav')
+with col2:
+    if st.button("Reproducir Audio Anormal"):
+        audio_anormal_file = '../content/train_audio/section_00_source_train_anormal_0000.wav'
+        st.audio(audio_anormal_file, format='audio/wav')
 
 # Captura de audio en tiempo real
-st.subheader("Evaluar audio en tiempo real")
+st.subheader("Evaluar Audio en Tiempo Real")
 sample_rate = 22050  # Frecuencia de muestreo
 duration = 10  # Duración de la grabación en segundos
 
-if st.button("Grabar y evaluar audio"):
+if st.button("Grabar y Evaluar Audio"):
     audio_data = record_audio(duration, sample_rate)
     
     if audio_data is not None:
