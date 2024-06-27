@@ -9,14 +9,33 @@ import sounddevice as sd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+import base64
 
 # CSS personalizado para cambiar el estilo de la página
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+def set_background(image_file):
+    bin_str = open(image_file, 'rb').read()
+    b64_str = base64.b64encode(bin_str).decode()
+
+    css = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{b64_str}");
+        background-size: cover;
+    }}
+    </style>
+    """
+
+    st.markdown(css, unsafe_allow_html=True)
+
 # Cargar CSS personalizado
 local_css("style.css")
+
+# Establecer la imagen de fondo
+set_background('../src/fondo.jpg')
 
 # Función para extraer características de los archivos de audio
 def extract_features(sound, sr):
@@ -183,13 +202,11 @@ if st.button("Entrenar Modelo"):
     with st.spinner('Entrenando modelo...'):
         train_model()
 
-# Selección de archivo de audio para prueba
-audio_file = st.file_uploader("Cargar archivo de audio", type=["wav"])
+# Subir un archivo de audio para evaluación
+uploaded_file = st.file_uploader("Subir un archivo de audio", type=["wav"])
 
-# Predicción con el modelo cargado
-if audio_file is not None:
-    st.audio(audio_file, format='audio/wav')
-    audio_data, sample_rate = load_audio(audio_file)
+if uploaded_file is not None:
+    audio_data, sample_rate = load_audio(uploaded_file)
     
     if audio_data is not None:
         # Extraer características del audio
